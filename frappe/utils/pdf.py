@@ -80,7 +80,7 @@ def pdf_footer_html(soup, head, content, styles, html_id, css, path=None):
 
 
 def get_pdf(html, options=None, output: PdfWriter | None = None):
-	html = scrub_urls(html)
+	html = scrub_urls(html, pdf=True)
 	html, options = prepare_options(html, options)
 
 	options.update({"disable-javascript": "", "disable-local-file-access": ""})

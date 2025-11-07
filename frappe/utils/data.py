@@ -1588,9 +1588,13 @@ def get_url(
 	uri: str | None = None,
 	full_address: bool = False,
 	allow_header_override: bool = True,
+	pdf_generation: bool = False,
 ) -> str:
 	"""Get app url from request."""
-	host_name = frappe.local.conf.host_name or frappe.local.conf.hostname
+	if pdf_generation:
+		host_name = frappe.local.conf.pdf_generation_server
+	else:
+		host_name = frappe.local.conf.host_name or frappe.local.conf.hostname
 
 	if uri and (uri.startswith("http://") or uri.startswith("https://")):
 		return uri
@@ -2028,16 +2032,20 @@ def _sanitize_column(column_name: str, db_type: str) -> str:
 	return column_name
 
 
-def scrub_urls(html: str) -> str:
-	return expand_relative_urls(html)
+def scrub_urls(html: str, pdf=False) -> str:
+	return expand_relative_urls(html, pdf=pdf)
 
 
-def expand_relative_urls(html: str) -> str:
+def expand_relative_urls(html: str , pdf=False) -> str:
 	# expand relative urls
-	url = get_url()
-	if url.endswith("/"):
-		url = url[:-1]
-
+	if pdf:
+		url = get_url(pdf_generation=True)
+		if url.endswith("/"):
+			url = url[:-1]
+	else:
+		url = get_url()
+		if url.endswith("/"):
+			url = url[:-1]
 	def _expand_relative_urls(match):
 		to_expand = list(match.groups())
 
