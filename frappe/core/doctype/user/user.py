@@ -1061,7 +1061,7 @@ def user_query(doctype, txt, searchfield, start, page_len, filters):
 		or_filters += [[field, "like", f"%{txt}%"] for field in ("first_name", "middle_name", "last_name")]
 
 	if filters:
-		if not (filters.get("ignore_user_type") and frappe.session.data.user_type == "System User"):
+		if not (filters.get("ignore_user_type")): # and frappe.session.data.user_type == "System User"):
 			list_filters["user_type"] = ["!=", "Website User"]
 
 		filters.pop("ignore_user_type", None)
